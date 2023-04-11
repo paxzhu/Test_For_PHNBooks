@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+    <html lang="en-us">
+    <head>
+      <meta charset="utf-8">
+      <title>Login</title>
+    </head>
+    <body>
+        <form role="form" method="post" action="{{ url_for('login') }}">
+            <label for="username">用户名</label>
+            <input type="text" id="username" name="username">
+            <label for="password">密码</label>
+            <input type="password" id="password" name="password">
+            <button type="submit">提交</button>
+          </form>          
+    </body>
+  </html>
+  

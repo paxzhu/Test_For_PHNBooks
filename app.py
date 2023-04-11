@@ -1,21 +1,31 @@
+from flask import Flask, request
 import pymysql
+
+app = Flask(__name__)
 
 from db_account_config import db_kwargs
 connection = pymysql.connect(**db_kwargs)
-cursor = connection.cursor()
 
-sql = "INSERT INTO User (Username, Name, Password)  VALUES (%s, %s, %s);"
-values = ('Jack', 'tokyo', '123456')
-cursor.execute(sql, values)
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
 
-sql = "SELECT * FROM User"
-cursor.execute(sql)
+    sql = "SELECT Password FROM User WHERE Username=%s"
 
-data = cursor.fetchall()
+    cursor = connection.cursor()
+    cursor.execute(sql, (username))
+    data = cursor.fetchone()
+    connection.commit()
 
-connection.commit()
+    if data[0] == password:
+        return 'status: success'
+    else:
+        return 'status: failed'
 
-print(data)
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 
 
