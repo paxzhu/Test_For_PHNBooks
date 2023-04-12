@@ -26,4 +26,4 @@ def login():
     return render_template('greeting.html',status = status)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=8000)
