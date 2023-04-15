@@ -17,10 +17,9 @@ def login():
     cursor.execute(sql, (username))
     data = cursor.fetchone()
     connection.commit()
-    status = 'failed'
-    if data[0] == password:
-        status = 'success'
-    return render_template('greeting.html',status = status)
+    if data and data[0] == password:
+        return 'success'
+    return 'failed'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=6000)
