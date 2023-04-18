@@ -98,3 +98,54 @@ caption {
     color: #212529;
 }
 
+p {
+    color:blue;
+}
+h1 {
+    text-align: center;
+}
+
+body {
+    width: 80%;
+    padding: 0 30px 40px 50px;
+    margin: 0 auto;
+    border: 5px solid black;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}
+
+.subtitle {
+    font-size: 32px; 
+    text-align: center;
+    display: block;
+}
+
+.container {
+    width: 40%;
+    /* text-align: center; */
+    background-color:antiquewhite;
+}
+
+li {
+    list-style-type: square;
+}
+
+h1 + p {
+    font-size: 50%;
+}
+
+a:link {
+    color: pink;
+  }
+  
+a:visited {
+    color: green;
+}
+  
+a:hover {
+    text-decoration: none;
+}
+  
