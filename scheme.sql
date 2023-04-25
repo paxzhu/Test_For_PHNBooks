@@ -11,5 +11,6 @@ CREATE TABLE User(
 );
 
 CREATE TABLE Notes(
-    Contents varchar(100) NOT NULL
+    Title varchar(50) NOT NULL,
+    Content varchar(1000) NOT NULL
 );

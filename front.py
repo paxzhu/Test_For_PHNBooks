@@ -29,6 +29,25 @@ def notes():
     
     return render_template('NoteBook.html')
 
+@app.route('/read/<title>')
+def read(title):
+    print(title)
+    url = server + '/read?title=%s' % title
+    response = requests.get(url)
+    article = response.json()
+    print(article)
+    return render_template('read.html', title = article['title'], content = article['content'])
+
+@app.route('/edit/<article>')
+def edit(article):
+
+    pass
+
+@app.route('/overview')
+def overview():
+    pass
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
