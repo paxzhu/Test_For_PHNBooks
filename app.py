@@ -24,7 +24,6 @@ def login():
 @app.route('/read')
 def read():
     title = request.args['title']
-    print(title)
     sql = "SELECT * FROM Notes WHERE Title=%s"
     cursor = connection.cursor()
     cursor.execute(sql, title)
@@ -34,15 +33,16 @@ def read():
         article['content'] = data[1]
     return json.dumps(article)
 
-@app.route('/edit')
-def edit(article):
+@app.route('/edit', methods=['GET', 'POST'])
+def edit():
     title = request.form['title']
     content = request.form['content']
+    print(title, content)
     sql = "INSERT INTO Notes(Title, Content) Values(%s, %s)"
     cursor = connection.cursor()
     cursor.execute(sql, (title, content))
-    cursor.commit()
-    pass
+    connection.commit()
+    return 'OK'
 
 @app.route('/overview')
 def overview():

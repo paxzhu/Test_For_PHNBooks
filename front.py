@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import requests
+import json
 from urllib.parse import quote
 app = Flask(__name__)
 server = "http://127.0.0.1:6000"
@@ -34,11 +35,6 @@ def notes():
 def read(title):
     url = server + '/read?title=' + quote(title)
     response = requests.get(url)
-    # article = response.json()
-    # print(article)
-    # if not article['status']:
-    #     return "No article found for title: " + title, 404
-    # return render_template('read.html', title = title, content = article['content'])
     article = response.json()
     print(article)
     if not article:
@@ -47,11 +43,15 @@ def read(title):
 
 @app.route('/edit/<article>', methods = ['GET', 'POST'])
 def edit(article):
-    form = request.form
-    url = server + '/edit'
-    response = requests.post(url, form)
-    status = response.text
-    pass
+    if request.method == 'POST':
+        data = request.form
+        url = server + '/edit'
+        print(data)
+        response = requests.post(url, data)
+        status = response.text
+        if status == 'OK':
+            return redirect(url_for('read', title=request.form['title']))
+    return render_template('NoteBook.html')
 
 @app.route('/overview.html')
 def overview():
