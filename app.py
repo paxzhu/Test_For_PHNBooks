@@ -29,9 +29,9 @@ def read():
     cursor = connection.cursor()
     cursor.execute(sql, title)
     data = cursor.fetchone()
-    article = dict(status = False, content = None)
+    article = {}
     if data:
-        article['status'], article['content'] = True, data[1]
+        article['content'] = data[1]
     return json.dumps(article)
 
 @app.route('/edit')
@@ -46,12 +46,13 @@ def edit(article):
 
 @app.route('/overview')
 def overview():
-    sql = "SELECT TiTle FROM Notes"
+    sql = "SELECT Title FROM Notes"
     cursor = connection.cursor()
     cursor.execute(sql)
-    titles = cursor.fetchall()
-    print(titles)
-    return titles
+    articles = cursor.fetchall()
+    titles = {article[0]:None for article in articles}
+    return json.dumps(titles)  
+           
 
 
 if __name__ == '__main__':

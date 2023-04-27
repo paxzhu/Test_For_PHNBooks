@@ -32,16 +32,20 @@ def notes():
 
 @app.route('/read/<title>')
 def read(title):
-    print(title)
     url = server + '/read?title=' + quote(title)
     response = requests.get(url)
+    # article = response.json()
+    # print(article)
+    # if not article['status']:
+    #     return "No article found for title: " + title, 404
+    # return render_template('read.html', title = title, content = article['content'])
     article = response.json()
     print(article)
-    if not article['status']:
+    if not article:
         return "No article found for title: " + title, 404
     return render_template('read.html', title = title, content = article['content'])
 
-@app.route('/edit/<article>')
+@app.route('/edit/<article>', methods = ['GET', 'POST'])
 def edit(article):
     form = request.form
     url = server + '/edit'
@@ -49,12 +53,14 @@ def edit(article):
     status = response.text
     pass
 
-@app.route('/overview')
+@app.route('/overview.html')
 def overview():
     url = server + '/overview'
     response = requests.get(url)
-    titles = response.text
-    return render_template()
+    titles = response.json()
+    if not titles:
+        return "You have not edited any articles or have not saved the edited ones.", 404
+    return render_template('overview.html', titles=titles)
 
 
 if __name__ == '__main__':
