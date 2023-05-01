@@ -23,26 +23,20 @@ def login():
     
     return render_template('login.html')
 
-@app.route('/NoteBook.html', methods=['GET', 'POST'])
-def notes():
-    if request.method == 'POST':
-        data = request.form
-        return data
-    
-    return render_template('NoteBook.html')
-
 @app.route('/read/<title>')
 def read(title):
-    url = server + '/read?title=' + quote(title)
+    title = 'What is a framework?'
+    url = server + '/read?title=' + title
+    print(url)
     response = requests.get(url)
     article = response.json()
-    print(article)
+    print(request.path)
     if not article:
         return "No article found for title: " + title, 404
     return render_template('read.html', title = title, content = article['content'])
 
-@app.route('/edit/<article>', methods = ['GET', 'POST'])
-def edit(article):
+@app.route('/edit/<title>', methods = ['GET', 'POST'])
+def edit(title):
     if request.method == 'POST':
         data = request.form
         url = server + '/edit'
@@ -51,7 +45,7 @@ def edit(article):
         status = response.text
         if status == 'OK':
             return redirect(url_for('read', title=request.form['title']))
-    return render_template('NoteBook.html')
+    return render_template('edit.html')
 
 @app.route('/overview.html')
 def overview():

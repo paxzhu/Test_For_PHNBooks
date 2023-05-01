@@ -23,6 +23,7 @@ def login():
 
 @app.route('/read')
 def read():
+    print(request.url)
     title = request.args['title']
     sql = "SELECT * FROM Notes WHERE Title=%s"
     cursor = connection.cursor()
@@ -31,6 +32,7 @@ def read():
     article = {}
     if data:
         article['content'] = data[1]
+        
     return json.dumps(article)
 
 @app.route('/edit', methods=['GET', 'POST'])
