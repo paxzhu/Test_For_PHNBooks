@@ -7,6 +7,13 @@ app = Flask(__name__)
 from db_account_config import db_kwargs
 connection = pymysql.connect(**db_kwargs)
 
+def isexist(title):
+    cursor = connection.cursor()
+    sql = 'SELECT * FROM Notes WHERE Title=%s'
+    cursor.execute(sql, title)
+    answer = cursor.fetchone()
+    return answer != None
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     username = request.form['username']
@@ -37,14 +44,27 @@ def read():
 
 @app.route('/edit', methods=['GET', 'POST'])
 def edit():
-    title = request.form['title']
-    content = request.form['content']
-    print(title, content)
-    sql = "INSERT INTO Notes(Title, Content) Values(%s, %s)"
     cursor = connection.cursor()
-    cursor.execute(sql, (title, content))
-    connection.commit()
-    return 'OK'
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        print(title, content)
+        sql = "INSERT INTO Notes(Content, Title) Values(%s, %s)"
+        if isexist(title):
+            sql = "UPDATE Notes SET Content=%s WHERE Title=%s"
+        
+        
+        cursor.execute(sql, (content, title))
+        connection.commit()
+        return 'OK'
+    title = request.args['title']
+    sql = "SELECT * FROM Notes WHERE Title=%s"
+    cursor.execute(sql, title)
+    data = cursor.fetchone()
+    article = {}
+    if data:
+        article['content'] = data[1]
+    return json.dumps(article)
 
 @app.route('/overview')
 def overview():

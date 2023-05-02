@@ -25,8 +25,7 @@ def login():
 
 @app.route('/read/<title>')
 def read(title):
-    title = 'What is a framework?'
-    url = server + '/read?title=' + title
+    url = server + '/read?title=' + quote(title)
     print(url)
     response = requests.get(url)
     article = response.json()
@@ -35,6 +34,7 @@ def read(title):
         return "No article found for title: " + title, 404
     return render_template('read.html', title = title, content = article['content'])
 
+@app.route('/edit/', defaults={'title':''})
 @app.route('/edit/<title>', methods = ['GET', 'POST'])
 def edit(title):
     if request.method == 'POST':
@@ -45,7 +45,16 @@ def edit(title):
         status = response.text
         if status == 'OK':
             return redirect(url_for('read', title=request.form['title']))
-    return render_template('edit.html')
+    if not title:
+        return render_template('edit.html')
+    url = server + '/edit?title=' + quote(title)
+    print(url)
+    response = requests.get(url)
+    article = response.json()
+    if not article:
+        return render_template('edit.html', title=title)
+    return render_template('edit.html', title=title, content=article['content'])
+
 
 @app.route('/overview.html')
 def overview():
