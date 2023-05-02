@@ -1,12 +1,22 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import requests
 import json
 from urllib.parse import quote
 app = Flask(__name__)
+
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 server = "http://127.0.0.1:6000"
+
+@app.before_request
+def loads_user():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
 @app.route('/')
 def index():
-    return render_template('/index.html')
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return redirect(url_for('overview'))
 
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
@@ -18,8 +28,9 @@ def login():
         status = response.json()
         print(status)
         if status['status'] == 'success':
-            return redirect('/NoteBook.html')
-        return status['status']
+            session['username'] = request.form['username']
+            return redirect(url_for('overview'))
+        # flash(error)
     
     return render_template('login.html')
 
