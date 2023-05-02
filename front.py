@@ -40,15 +40,16 @@ def edit(title):
     if request.method == 'POST':
         data = request.form
         url = server + '/edit'
-        print(data)
         response = requests.post(url, data)
         status = response.text
+        # handle exception: database query error
         if status == 'OK':
             return redirect(url_for('read', title=request.form['title']))
+    # user did not specify a title to edit, return an empty edit-page
     if not title:
         return render_template('edit.html')
+    # user specified a title, update the content or create an article with the title
     url = server + '/edit?title=' + quote(title)
-    print(url)
     response = requests.get(url)
     article = response.json()
     if not article:

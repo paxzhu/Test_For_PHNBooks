@@ -7,12 +7,16 @@ app = Flask(__name__)
 from db_account_config import db_kwargs
 connection = pymysql.connect(**db_kwargs)
 
-def isexist(title):
+def query_db(title):
+    # query the db and return the result
     cursor = connection.cursor()
     sql = 'SELECT * FROM Notes WHERE Title=%s'
     cursor.execute(sql, title)
-    answer = cursor.fetchone()
-    return answer != None
+    data = cursor.fetchone()
+    article = {}
+    if data:
+        article['content'] = data[1]
+    return article
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -30,40 +34,29 @@ def login():
 
 @app.route('/read')
 def read():
-    print(request.url)
     title = request.args['title']
-    sql = "SELECT * FROM Notes WHERE Title=%s"
-    cursor = connection.cursor()
-    cursor.execute(sql, title)
-    data = cursor.fetchone()
-    article = {}
-    if data:
-        article['content'] = data[1]
-        
+    article = query_db(title)
     return json.dumps(article)
 
 @app.route('/edit', methods=['GET', 'POST'])
 def edit():
-    cursor = connection.cursor()
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
-        print(title, content)
+
+        # default behavior: insert table entry into table
         sql = "INSERT INTO Notes(Content, Title) Values(%s, %s)"
-        if isexist(title):
+        # if title exists, update the content
+        if query_db(title):
             sql = "UPDATE Notes SET Content=%s WHERE Title=%s"
-        
-        
+
+        cursor = connection.cursor()
         cursor.execute(sql, (content, title))
         connection.commit()
         return 'OK'
+    
     title = request.args['title']
-    sql = "SELECT * FROM Notes WHERE Title=%s"
-    cursor.execute(sql, title)
-    data = cursor.fetchone()
-    article = {}
-    if data:
-        article['content'] = data[1]
+    article = query_db(title)
     return json.dumps(article)
 
 @app.route('/overview')
