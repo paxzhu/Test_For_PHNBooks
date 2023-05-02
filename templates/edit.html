@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %} edit {% endblock %}
+{% block content %}
+<div>
+    <form method="post">
+        <div class="mb-2">
+            <input type="text" name="title" placeholder="Your title" value="{{ title|default('') }}" required>
+        </div>
+        <div class="mb-2">
+            <textarea name="content" placeholder="Write here" cols="30" rows="10" required>{{ content|default('') }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}
