@@ -5,12 +5,18 @@ CREATE DATABASE IF NOT EXISTS paxhttp_notebooks
 USE paxhttp_notebooks;
 
 CREATE TABLE User(
+    author_id INT NOT NULL AUTO_INCREMENT,
     Username varchar(50) NOT NULL,
     Password varchar(50) NOT NULL,
-    PRIMARY KEY(Username)
+    PRIMARY KEY(author_id)
 );
 
-CREATE TABLE Notes(
-    Title varchar(50) NOT NULL,
-    Content varchar(1000) NOT NULL
+CREATE TABLE Article(
+    article_id INT NOT NULL AUTO_INCREMENT,
+    Title VARCHAR(100),
+    Content TEXT,
+    author_id INT,
+    PRIMARY KEY(article_id),
+    FOREIGN KEY(author_id) REFERENCES User(author_id)
 );
+

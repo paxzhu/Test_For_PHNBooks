@@ -7,15 +7,15 @@ app = Flask(__name__)
 from db_account_config import db_kwargs
 connection = pymysql.connect(**db_kwargs)
 
-def query_db(title):
+def get_article_or_empty(title):
     # query the db and return the result
     cursor = connection.cursor()
-    sql = 'SELECT * FROM Notes WHERE Title=%s'
+    sql = 'SELECT * FROM Article WHERE Title=%s'
     cursor.execute(sql, title)
     data = cursor.fetchone()
     article = {}
     if data:
-        article['content'] = data[1]
+        article['content'] = data[2]
     return article
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -35,7 +35,7 @@ def login():
 @app.route('/read')
 def read():
     title = request.args['title']
-    article = query_db(title)
+    article = get_article_or_empty(title)
     return json.dumps(article)
 
 @app.route('/edit', methods=['GET', 'POST'])
@@ -45,10 +45,10 @@ def edit():
         content = request.form['content']
 
         # default behavior: insert table entry into table
-        sql = "INSERT INTO Notes(Content, Title) Values(%s, %s)"
+        sql = "INSERT INTO Article(Content, Title) Values(%s, %s)"
         # if title exists, update the content
-        if query_db(title):
-            sql = "UPDATE Notes SET Content=%s WHERE Title=%s"
+        if get_article_or_empty(title):
+            sql = "UPDATE Article SET Content=%s WHERE Title=%s"
 
         cursor = connection.cursor()
         cursor.execute(sql, (content, title))
@@ -56,16 +56,18 @@ def edit():
         return 'OK'
     
     title = request.args['title']
-    article = query_db(title)
+    article = get_article_or_empty(title)
     return json.dumps(article)
 
 @app.route('/overview')
 def overview():
-    sql = "SELECT Title FROM Notes"
+    sql = "SELECT Title FROM Article"
     cursor = connection.cursor()
     cursor.execute(sql)
     articles = cursor.fetchall()
+    # print(articles)
     titles = {article[0]:None for article in articles}
+    
     return json.dumps(titles)  
            
 

@@ -7,10 +7,10 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 server = "http://127.0.0.1:6000"
 
-@app.before_request
-def loads_user():
-    if 'username' not in session:
-        return redirect(url_for('login'))
+# @app.before_request
+# def loads_user():
+#     if 'username' not in session:
+#         return redirect(url_for('login'))
 
 @app.route('/')
 def index():
@@ -33,6 +33,7 @@ def login():
         # flash(error)
     
     return render_template('login.html')
+
 
 @app.route('/read/<title>')
 def read(title):

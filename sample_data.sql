@@ -1,6 +1,10 @@
 USE paxhttp_notebooks;
-INSERT INTO User(Username, Password) VALUES('Tony', 'Tony'), ('Mike', 'Mike'), ('Li', 'Li');
+INSERT INTO User(author_id, Username, Password) VALUES(1, 'Tony', 'Tony'), (2, 'Mike', 'Mike'), (3, 'Li', 'Li');
 
-INSERT INTO Notes(Title, Content) VALUES
-('Here is title', 'Here is content'),
-('What is a framework?', 'A framework is a semi-finished software that requires further development,configuration,and customization by developers to complete a specific application development.The framework provides a set of tools and libraries that enable developers to develop applications more quickly and efficiently,while also improving the reliability and maintainability of the application.A web framework is a special type of framework that is mainly used for developing web applications.Web frameworks typically provide a set of components such as routing, templates,data storage and management, middleware, etc., that enable developers to develop web applications quickly and efficiently.Common web frameworks include Django, Flask, Spring, Ruby on Rails, etc.');
+INSERT INTO Article(article_id, Title, Content, author_id) VALUES
+(1, 'Here is title', 'Here is content', 1),
+(2, 'title2', 'content2', 1),
+(3, 'title3', 'content3', 1),
+(4, 'article_of_Mr2', 'Here is content', 2),
+(5, 'Mr2', 'About Mr2', 2),
+(6, 'Mr3', 'About Mr3', 3);
