@@ -59,8 +59,8 @@ def edit():
     article = get_article_or_empty(title)
     return json.dumps(article)
 
-@app.route('/overview')
-def overview():
+@app.route('/overview/articles')
+def overview_articles():
     sql = "SELECT Title FROM Article"
     cursor = connection.cursor()
     cursor.execute(sql)
@@ -69,8 +69,21 @@ def overview():
     titles = {article[0]:None for article in articles}
     
     return json.dumps(titles)  
-           
 
+@app.route('/overview/authors')
+def overview_authors():
+    sql = """SELECT Author.author_id, Author.Username, COUNT(Article.article_id) AS article_count
+            FROM User as Author
+            LEFT JOIN Article ON Author.author_id = Article.author_id
+            GROUP BY Author.author_id, Author.Username;"""
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    print(data)
+    authors = {}
+    if data:
+        authors = { id:(name, works) for id, name, works in data}
+    return json.dumps(authors)
 
 if __name__ == '__main__':
     app.run(debug=True, port=6000)

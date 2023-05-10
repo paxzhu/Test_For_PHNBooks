@@ -4,7 +4,9 @@
     <div>
         <ul>
             {% for title in titles %}
-                <li> {{ title }} </li>
+                <li>
+                    <a href="../read/{{ title }}">{{ title }} </a>
+                </li>
             {% endfor %}
         </ul>
     </div>

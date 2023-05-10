@@ -16,7 +16,7 @@ server = "http://127.0.0.1:6000"
 def index():
     if 'username' not in session:
         return redirect(url_for('login'))
-    return redirect(url_for('overview'))
+    return redirect(url_for('overview_authors'))
 
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
@@ -29,7 +29,7 @@ def login():
         print(status)
         if status['status'] == 'success':
             session['username'] = request.form['username']
-            return redirect(url_for('overview'))
+            return redirect(url_for('overview_authors'))
         # flash(error)
     
     return render_template('login.html')
@@ -69,15 +69,23 @@ def edit(title):
     return render_template('edit.html', title=title, content=article['content'])
 
 
-@app.route('/overview.html')
-def overview():
-    url = server + '/overview'
+@app.route('/overview/articles.html')
+def overview_articles():
+    url = server + '/overview/articles'
     response = requests.get(url)
     titles = response.json()
     if not titles:
         return "You have not edited any articles or have not saved the edited ones.", 404
-    return render_template('overview.html', titles=titles)
+    return render_template('articles.html', titles=titles)
 
+@app.route('/overview/')
+def overview_authors():
+    url = server + '/overview/authors'
+    response = requests.get(url)
+    authors = response.json()
+    if not authors:
+        return "No User"
+    return render_template('authors.html', authors=authors)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
